@@ -33,6 +33,41 @@ describe('set-position-calculator.ts', () => {
             expect(max).toEqual(838);
 
         })
+
+        it('calculate missing boarding pass', ()=> {
+            const inputs = parseBoardingPassInputs(`${__dirname}/input1.txt`);
+
+            let map = new Array<boolean>( 128*8 );
+            for(const data of inputs){
+
+                const [row, col] = calculateColumnRow(data);
+                const ans = calcId([row, col]);
+                map[ans] = true;
+
+            }
+
+            let trigger = false;
+            let ctr = 0;
+            for(const flag of map){
+                if(!trigger){
+                    if(flag){
+                        trigger = true;
+                    }
+
+                }
+                else{
+                    if(!flag){
+                        break;
+                    }
+                }
+                ctr++;
+
+
+            }
+
+            expect(ctr).toEqual(714);
+
+        })
     })
 
 })
