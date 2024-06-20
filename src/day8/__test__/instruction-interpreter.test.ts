@@ -1,4 +1,4 @@
-import { parseInstructions, runProgram } from "../instruction-interpreter";
+import { parseInstructions, runProgram, runProgramWithRecover } from "../instruction-interpreter";
 
 
 describe('instruction-interpreter.ts', () => {
@@ -35,11 +35,23 @@ describe('instruction-interpreter.ts', () => {
 
         it('should get counter 5 for input1.txt',() =>{
             const parsedResp = parseInstructions(`${__dirname}/input1.txt`);
-            expect(runProgram(parsedResp)).toEqual(5)
+            expect(runProgram(parsedResp)).toEqual([5, true])
         })
         it('should get counter ?? for input2.txt',() =>{
             const parsedResp = parseInstructions(`${__dirname}/input2.txt`);
-            expect(runProgram(parsedResp)).toEqual(1179)
+            expect(runProgram(parsedResp)).toEqual([1179, true])
+        })
+
+    })
+    describe('runProgramWithRecover()', () => {
+
+        it('should get counter 5 for input1.txt',() =>{
+            const parsedResp = parseInstructions(`${__dirname}/input1.txt`);
+            expect(runProgramWithRecover(parsedResp)).toEqual(8)
+        })
+        it('should get counter ?? for input2.txt',() =>{
+            const parsedResp = parseInstructions(`${__dirname}/input2.txt`);
+            expect(runProgramWithRecover(parsedResp)).toEqual(1089)
         })
 
     })

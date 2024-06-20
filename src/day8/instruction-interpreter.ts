@@ -44,13 +44,16 @@ export function parseInstructions(pathToFile: string): Instruction[] {
 
 
 
-export function runProgram(instructions: Instruction[]): number{
+export function runProgram(instructions: Instruction[]): [number, boolean]{
     let ctr = 0
 
     const instructionRun = Array(instructions.length).fill(0);
 
     for(let i = 0; i < instructions.length;){
-        if(++instructionRun[i] > 1) break;
+        if(++instructionRun[i] > 1){
+            return [ctr, true]
+
+        };
         const [cmd, count] = instructions[i];
         const funcs = {
             nop: () => {i++},
@@ -61,5 +64,41 @@ export function runProgram(instructions: Instruction[]): number{
         funcs[cmd]();
     }
 
-    return ctr;
+    return [ ctr, false ];
+}
+
+
+export function toggleAt(instructions: Instruction[], idx: number) {
+
+    let cmd = instructions[idx][0];
+    assert(['nop', 'jmp'].includes(cmd));
+
+    if(cmd == 'nop') cmd = 'jmp';
+    else if(cmd == 'jmp') cmd = 'nop'
+
+    instructions[idx][0] = cmd;
+}
+
+
+export function runProgramWithRecover(instructions: Instruction[]): number {
+
+    let success = false;
+    const targets: number[] = []
+    for(let i = 0; i < instructions.length; i++){
+        if(['nop', 'jmp'].includes(instructions[i][0])) targets.push(i)
+    }
+
+
+    for(const idx of targets){
+        toggleAt(instructions, idx);
+        const [ctr, isLoop] = runProgram(instructions);
+        toggleAt(instructions, idx);
+
+
+        if(!isLoop){
+            return ctr;
+        }
+    }
+    return -1;
+
 }
