@@ -22,6 +22,39 @@ export function parseData(pathToFile: string): number[] {
 }
 
 
+export function findWeakness(data: number[], target: number): number {
+
+
+    let minIdx = 0;
+    let maxIdx = 1;
+
+    let currentSum = data[minIdx] + data[maxIdx];
+
+    while(maxIdx < data.length){
+        if(currentSum < target){
+            maxIdx++
+            currentSum = currentSum + data[maxIdx];
+        }
+        else if(currentSum > target){
+
+            currentSum = currentSum - data[minIdx];
+            minIdx++;
+        }
+        else{
+            const slice = data.slice(minIdx, maxIdx+1);
+            let min = Math.min(...slice)
+            let max = Math.max(...slice)
+            return min + max;
+        }
+
+
+    }
+
+
+    return -1
+}
+
+
 
 export function validateEncoding(data: number[], preambleSize: number): number {
 
